@@ -1,0 +1,12 @@
+GET http://127.0.0.1:2364
+### Test
+GET http://127.0.0.1:2364/test
+###
+POST http://127.0.0.1:2364/test
+content-type: application/json
+{
+    "name": "sample",
+    "time": "Wed, 21 Oct 2015 18:27:50 GMT"
+}
+### Goods
+GET http://127.0.0.1:2364/goods
