@@ -16,40 +16,42 @@ const {
     readdirSync
 } = require('fs');
 
-const rootRouter = new Router();
-const notProcessing = ['index.js', 'temp.js'];
+const showErrorLoadingModule = (moduleName, errorMessage) => {
+    console.log(`❌ not loaded route: ${moduleName} because "${errorMessage}"`);
+}
 
-const filesFilter = (files) => files.filter((file) => {
+const filesFilter = (files, notProcessing = []) => files.filter((file) => {
     return compareStrings(path.extname(file), '.js') && !compareStringInArray(file, notProcessing);
 });
 
-const dynamicLoadFiles = (files, server) => {
+const dynamicModuleLoader = (files, server) => {
     if (!files.length) return;
     files.forEach((file) => {
         const fileRoute = require('./' + file);
-        const fileName = path.basename(file, '.js');
+        const moduleName = path.basename(file, '.js').toLowerCase();
         if (typeof fileRoute === 'function') {
-            console.log(`✅ route: ${fileName}`);
-            fileRoute(server);
+            try {
+                const route = new Router();
+                fileRoute(route);
+                server.use(`/${moduleName}`, route);
+
+                console.log(`✅ route: ${moduleName}`);
+            } catch (error) {
+                showErrorLoadingModule(moduleName, error.message);
+            }
         } else {
-            console.log(`❌ not loaded route: ${fileName} because not "module.exports" function`);
+            console.log(`❌ not loaded route: ${moduleName} because not "module.exports" function`);
         }
     });
 };
 
-// rootRouter.get('/modules', async (req, res) => {
-// const data = await readdir(__dirname, 'utf-8');
-
-// const filteredModules = moduleFilter(data);
-// dynamicLoadModuleLogger(filteredModules);
-// res
-//     .status(200)
-//     .send(compareStringInArray('temp.js', filteredModules));
-// });
 const def = (server) => {
-    const files = readdirSync(__dirname, 'utf-8');
-    const filteredFiles = filesFilter(files);
-    return dynamicLoadFiles(filteredFiles, server);
+    if (server) {
+        const files = readdirSync(__dirname, 'utf-8');
+        const notProcessing = ['index.js', 'temp.js'];
+        const filteredFiles = filesFilter(files, notProcessing);
+        return dynamicModuleLoader(filteredFiles, server);
+    }
 
 }
 module.exports = def;
