@@ -8,7 +8,6 @@ const compareStrings = (leftString, rightString) => {
 
 };
 
-
 const compareStringInArray = (itemString, arrayStrings) => {
 
     if (!itemString || !Array.isArray(arrayStrings)) return false;
@@ -18,7 +17,6 @@ const compareStringInArray = (itemString, arrayStrings) => {
     return arrayStrings.some((currentString) => itemStringHigh === currentString.toUpperCase());
 
 };
-
 
 module.exports = {
     isString,

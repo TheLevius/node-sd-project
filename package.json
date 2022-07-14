@@ -21,7 +21,9 @@
     "express": "^4.18.1",
     "pg": "^8.7.3",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.21.2"
+    "sequelize": "^6.21.2",
+    "sequelize-cli": "^6.4.1",
+    "sequelize-mig": "github:sacredneobi/sequelize-mig"
   },
   "devDependencies": {
     "nodemon": "^2.0.19"
